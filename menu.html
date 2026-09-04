@@ -1,1 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>第五人格 · 模仿者手记</title>
+  <style>
+    /* 全局哥特做旧风格 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      min-height: 100vh;
+      background: #1a1410; /* 深色底 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Courier New', 'Times New Roman', serif;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    /* 做旧书页纹理 ———— 主卡片 */
+    .grimoire {
+      max-width: 720px;
+      width: 100%;
+      background: #ece3d5;  /* 旧纸基色 */
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(200, 180, 160, 0.2) 0%, transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(150, 130, 110, 0.15) 0%, transparent 40%),
+        repeating-linear-gradient(45deg, rgba(120, 100, 80, 0.03) 0px, rgba(120, 100, 80, 0.03) 2px, 
+                                  rgba(160, 140, 120, 0.05) 2px, rgba(160, 140, 120, 0.05) 4px);
+      padding: 2.8rem 2.2rem;
+      border-radius: 24px 8px 24px 8px;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.7),
+        inset 0 0 30px rgba(90, 70, 50, 0.3),
+        0 0 0 1px #b8a692,      /* 旧书封边 */
+        0 0 0 4px #2f241e,
+        0 0 0 6px #bba88c;
+      position: relative;
+      transition: all 0.2s ease;
+      transform: rotate(0.3deg);
+    }
+
+    /* 额外做旧：污渍 / 水渍 */
+    .grimoire::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 5%;
+      width: 40%;
+      height: 30%;
+      background: radial-gradient(ellipse at 30% 40%, rgba(160, 130, 100, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+      border-radius: 50%;
+      filter: blur(6px);
+    }
+
+    .grimoire::after {
+      content: '';
+      position: absolute;
+      bottom: 15%;
+      right: 8%;
+      width: 35%;
+      height: 25%;
+      background: radial-gradient(ellipse at 70% 60%, rgba(120, 90, 70, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+      border-radius: 50%;
+      filter: blur(8px);
+    }
+
+    /* 标题区域 — 模仿者手记 */
+    .title-section {
+      text-align: center;
+      margin-bottom: 2.8rem;
+      position: relative;
+      border-bottom: 2px dashed #5f4c3a;
+      padding-bottom: 1.2rem;
+    }
+
+    .title-section h1 {
+      font-family: 'Times New Roman', 'Georgia', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: 6px;
+      color: #2f241e;
+      text-shadow: 
+        3px 3px 0 rgba(120, 90, 70, 0.2),
+        -1px -1px 0 rgba(255, 235, 200, 0.4);
+      text-transform: uppercase;
+      word-spacing: 8px;
+      transform: scaleY(0.98);
+    }
+
+    .title-section .sub {
+      display: block;
+      font-size: 0.9rem;
+      letter-spacing: 10px;
+      color: #5f4c3a;
+      margin-top: 6px;
+      font-style: italic;
+      border-top: 1px dotted #8b7764;
+      padding-top: 8px;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    /* 三枚按钮 — 哥特式旧书页感 */
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+      margin: 2.5rem 0 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 1.2rem 1.8rem;
+      background: #dacfbe;
+      background-image: 
+        linear-gradient(145deg, #e5d9c6 0%, #cec0ab 100%);
+      border: 2px solid #6a5a48;
+      border-radius: 40px 12px 40px 12px;
+      box-shadow: 
+        inset 0 -4px 0 #4d3e30,
+        inset 0 4px 8px rgba(255, 235, 200, 0.6),
+        0 8px 12px rgba(0, 0, 0, 0.4),
+        0 0 0 1px #b8a084;
+      color: #1f1610;
+      font-family: 'Courier New', 'Times New Roman', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 0 #f2e6d4, 2px 2px 0 rgba(90, 70, 50, 0.2);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+      transform: rotate(-0.2deg);
+      text-align: center;
+      word-break: keep-all;
+      line-height: 1.3;
+    }
+
+    /* 做旧细节：撕裂 / 磨损线 */
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 18px;
+      width: 60px;
+      height: 6px;
+      background: rgba(100, 80, 60, 0.08);
+      border-radius: 50%;
+      filter: blur(4px);
+      pointer-events: none;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      width: 40px;
+      height: 4px;
+      background: rgba(70, 50, 30, 0.1);
+      border-radius: 50%;
+      filter: blur(3px);
+      pointer-events: none;
+    }
+
+    /* 不同按钮细微色调差异 */
+    .btn:nth-child(1) {
+      background: #d6c7b2;
+      background-image: linear-gradient(145deg, #e2d2bb, #cbbaa3);
+      border-color: #5f4c3a;
+    }
+
+    .btn:nth-child(2) {
+      background: #dacbb6;
+      background-image: linear-gradient(145deg, #e7d7c0, #cfbea7);
+      border-color: #6a5a48;
+    }
+
+    .btn:nth-child(3) {
+      background: #decbb4;
+      background-image: linear-gradient(145deg, #ead9c0, #d2bea5);
+      border-color: #75624e;
+    }
+
+    /* 悬停效果 — 旧书页被翻动 */
+    .btn:hover {
+      transform: scale(1.02) rotate(0.5deg);
+      background-image: linear-gradient(145deg, #eee1ce, #d4c3ae);
+      box-shadow: 
+        inset 0 -4px 0 #4d3e30,
+        inset 0 4px 12px rgba(255, 235, 200, 0.8),
+        0 12px 18px rgba(0, 0, 0, 0.5),
+        0 0 0 1px #bfab91;
+      border-color: #4d3e30;
+      letter-spacing: 8px;
+    }
+
+    .btn:active {
+      transform: scale(0.97) rotate(-0.3deg);
+      box-shadow: 
+        inset 0 2px 6px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: 0.03s;
+    }
+
+    /* 装饰性页码 / 仿古标记 */
+    .footer-note {
+      margin-top: 2.8rem;
+      text-align: right;
+      font-size: 0.8rem;
+      color: #5f4c3a;
+      border-top: 1px dashed #9b8874;
+      padding-top: 1rem;
+      font-style: italic;
+      letter-spacing: 2px;
+      opacity: 0.7;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-note span {
+      background: rgba(160, 130, 100, 0.1);
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      border: 1px solid #b8a084;
+      color: #3f3228;
+      letter-spacing: 3px;
+      backdrop-filter: blur(2px);
+    }
+
+    .footer-note .sigil {
+      font-family: 'Georgia', serif;
+      font-size: 1.2rem;
+      opacity: 0.5;
+    }
+
+    /* 极简响应 */
+    @media (max-width: 480px) {
+      .grimoire {
+        padding: 1.8rem 1.2rem;
+        border-radius: 16px 4px 16px 4px;
+      }
+      .title-section h1 {
+        font-size: 2rem;
+        letter-spacing: 3px;
+      }
+      .btn {
+        font-size: 1.4rem;
+        padding: 1rem 0.8rem;
+        letter-spacing: 4px;
+        border-radius: 30px 8px 30px 8px;
+      }
+      .button-group {
+        gap: 1.2rem;
+      }
+    }
+
+    /* 模拟第五人格 “侦探” 氛围 — 微量血迹/锈迹 (极淡) */
+    .grimoire .stain {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(130, 70, 50, 0.06) 0%, transparent 70%);
+      width: 120px;
+      height: 80px;
+      top: 60%;
+      left: 10%;
+      filter: blur(10px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .grimoire .stain2 {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(90, 60, 40, 0.07) 0%, transparent 70%);
+      width: 200px;
+      height: 150px;
+      bottom: 5%;
+      right: 0;
+      filter: blur(18px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 模拟做旧纸边 */
+    .paper-edge {
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 26px 10px 26px 10px;
+      background: transparent;
+      pointer-events: none;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="grimoire">
+    <!-- 装饰污渍 (纯粹氛围) -->
+    <div class="stain"></div>
+    <div class="stain2"></div>
+    <div class="paper-edge"></div>
+
+    <!-- 标题：模仿者手记 -->
+    <div class="title-section">
+      <h1>模仿者<br><span style="font-size: 1.6rem; letter-spacing: 12px;">手记</span></h1>
+      <span class="sub">✦ 第五人格 · 旧卷 ✦</span>
+    </div>
+
+    <!-- 三个核心按钮 -->
+    <div class="button-group">
+      <!-- 还原记忆 -->
+      <a href="#" class="btn" id="btn-memory" data-url="https://example.com/memory">📜 还原记忆</a>
+      <!-- 胶卷修复 -->
+      <a href="#" class="btn" id="btn-film" data-url="https://example.com/film">🎞️ 胶卷修复</a>
+      <!-- 演绎中心 -->
+      <a href="#" class="btn" id="btn-stage" data-url="https://example.com/stage">🎭 演绎中心</a>
+    </div>
+
+    <!-- 页脚装饰 + 跳转提示 (占位) -->
+    <div class="footer-note">
+      <span>◆ 旧日回响 ◆</span>
+      <span class="sigil">☾ 模仿者 ☽</span>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // 获取三个按钮 (通过id或类均可)
+      const memoryBtn = document.getElementById('btn-memory');
+      const filmBtn = document.getElementById('btn-film');
+      const stageBtn = document.getElementById('btn-stage');
+
+      // 映射按钮与对应URL (可根据需要随时修改)
+      // 当前使用示例占位URL
+      const urlMap = {
+        memory: 'https://example.com/memory',   // 还原记忆
+        film: 'https://example.com/film',       // 胶卷修复
+        stage: 'https://example.com/stage'      // 演绎中心
+      };
+
+      // 统一跳转处理 (保留原sample，但便于后期替换)
+      function handleNavigation(event, url) {
+        event.preventDefault();   // 阻止默认a标签跳转 (保留样式)
+        if (url && url.startsWith('http')) {
+          window.location.href = url;
+        } else {
+          // fallback: 如果是空或者自定义，可做提示
+          console.warn('跳转URL尚未配置, 当前为:', url);
+          // 也可以弹窗提醒，但风格上保持静默，仅做演示
+          alert(`[模仿者手记] 即将前往：${url || '未设置URL'}`);
+          // 实际生产可取消注释下面一行 强行跳转 (但会打破示例)
+          // if (url) window.location.href = url;
+        }
+      }
+
+      // 为每个按钮绑定点击事件 (使用data-url或者直接硬编码)
+      memoryBtn.addEventListener('click', function(e) {
+        // 可以从data-url取，也可以直接取映射
+        const url = this.getAttribute('data-url') || urlMap.memory;
+        handleNavigation(e, url);
+      });
+
+      filmBtn.addEventListener('click', function(e) {
+        const url = this.getAttribute('data-url') || urlMap.film;
+        handleNavigation(e, url);
+      });
+
+      stageBtn.addEventListener('click', function(e) {
+        const url = this.getAttribute('data-url') || urlMap.stage;
+        handleNavigation(e, url);
+      });
+
+      // 额外：如果页面中有其他a标签需要统一，但无需额外操作
+      // 同时支持手动修改data-url 或 修改urlMap对象 (开发者友好)
+
+      // 小彩蛋：在控制台可修改跳转地址 (方便替换)
+      console.log('🕯️ 模仿者手记 · 跳转配置 (可修改 urlMap 对象)');
+      console.log('当前映射: ', urlMap);
+      console.log('例如: urlMap.memory = "https://your-new-url"');
+
+      // 提供全局修改入口 (方便调试)
+      window.__grimoire = {
+        urlMap: urlMap,
+        updateUrl: function(key, newUrl) {
+          if (urlMap.hasOwnProperty(key)) {
+            urlMap[key] = newUrl;
+            // 同时更新对应按钮的 data-url (可选)
+            const btnMap = {
+              memory: memoryBtn,
+              film: filmBtn,
+              stage: stageBtn
+            };
+            if (btnMap[key]) {
+              btnMap[key].setAttribute('data-url', newUrl);
+            }
+            console.log(`✅ 已更新 ${key} 跳转地址: ${newUrl}`);
+          } else {
+            console.warn('键名错误，可用: memory, film, stage');
+          }
+        }
+      };
+    })();
+  </script>
+
+  <!-- 额外说明：按钮的 data-url 已经内嵌，但为了清晰，也保留在js中 -->
+  <!-- 如果将来想单独修改按钮的URL，可直接在html中修改 data-url 属性，或者用控制台修改 -->
+</body>
+</html>
